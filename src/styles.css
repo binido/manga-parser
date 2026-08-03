@@ -55,6 +55,11 @@
   box-sizing: border-box;
 }
 
+/* Собственный display у карточек и кнопок иначе перебивает атрибут hidden. */
+[hidden] {
+  display: none !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -308,37 +313,40 @@ h2 {
 
 .field input {
   width: 100%;
-  min-height: 52px;
-  padding: 18px 14px 6px;
+  min-height: 56px;
+  padding: 0 16px;
   border: 1px solid var(--outline);
   border-radius: var(--radius-s);
   background: transparent;
   color: var(--on-surface);
   font: inherit;
+  text-overflow: ellipsis;
   transition: border-color var(--motion);
 }
 
 .field input:focus {
   outline: none;
   border-color: var(--primary);
-  border-width: 2px;
-  padding: 17px 13px 5px;
+  box-shadow: inset 0 0 0 1px var(--primary);
 }
 
 .field label {
   position: absolute;
-  left: 14px;
+  left: 12px;
   top: 50%;
+  padding: 0 4px;
   transform: translateY(-50%);
   color: var(--on-surface-variant);
   pointer-events: none;
-  transition: transform var(--motion), font-size var(--motion), color var(--motion);
+  transition: top var(--motion), font-size var(--motion), color var(--motion);
 }
 
+/* Всплывший лейбл садится на рамку и вырезает её собственным фоном. */
 .field input:focus + label,
 .field input:not(:placeholder-shown) + label {
-  transform: translateY(-22px);
+  top: 0;
   font-size: 11px;
+  background: var(--surface-container);
 }
 
 .field input:focus + label {
@@ -348,8 +356,6 @@ h2 {
 .field--readonly input {
   cursor: default;
   color: var(--on-surface-variant);
-  direction: rtl;
-  text-align: left;
 }
 
 /* --- Прогресс --- */
