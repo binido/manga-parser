@@ -14,6 +14,9 @@ pub struct Job {
     /// Куда положить результат. Пусто — рядом с источником, как в CLI-версии.
     #[serde(default)]
     pub destination: Option<PathBuf>,
+    /// Необязательная обложка: становится первой страницей сборки.
+    #[serde(default)]
+    pub cover: Option<PathBuf>,
     pub output_name: String,
 }
 
@@ -27,6 +30,7 @@ pub struct Outcome {
 
 pub fn run(job: &Job, reporter: &dyn Reporter) -> Result<Outcome> {
     let source = resolve_source(&job.source)?;
+    let cover = resolve_cover(job.cover.as_deref())?;
     let output = resolve_output(job, &source)?;
 
     let workspace = Workspace::beside(&output)?;
@@ -42,14 +46,26 @@ pub fn run(job: &Job, reporter: &dyn Reporter) -> Result<Outcome> {
 
     recreate_dir(&output, reporter)?;
 
-    let mut images = 0;
+    let cover_pages = match &cover {
+        Some(cover) => {
+            place_cover(cover, &output)?;
+            reporter.info(format!(
+                "Обложка {} стала первой страницей.",
+                file_name(cover)
+            ));
+            1
+        }
+        None => 0,
+    };
+
+    let mut pages = 0;
     for (position, chapter) in chapters.iter().enumerate() {
         if reporter.is_cancelled() {
             return Err(Error::Cancelled);
         }
 
         let name = file_name(chapter);
-        let collected = match unpack_chapter(chapter, &workspace, &output, images) {
+        let collected = match unpack_chapter(chapter, &workspace, &output, cover_pages + pages) {
             Ok(count) => count,
             Err(Error::Archive { .. }) => {
                 reporter.warn(format!("Пропущена повреждённая глава: {name}"));
@@ -58,7 +74,7 @@ pub fn run(job: &Job, reporter: &dyn Reporter) -> Result<Outcome> {
             Err(other) => return Err(other),
         };
 
-        images += collected;
+        pages += collected;
         reporter.report(Event::ChapterDone {
             index: position + 1,
             total: chapters.len(),
@@ -67,14 +83,15 @@ pub fn run(job: &Job, reporter: &dyn Reporter) -> Result<Outcome> {
         });
     }
 
-    if images == 0 {
+    // Одна обложка без единой страницы из глав — это не сборка.
+    if pages == 0 {
         return Err(Error::NoImages);
     }
 
     let outcome = Outcome {
         output,
         chapters: chapters.len(),
-        images,
+        images: cover_pages + pages,
     };
     reporter.report(Event::Finished {
         chapters: outcome.chapters,
@@ -93,6 +110,21 @@ fn resolve_source(source: &Path) -> Result<PathBuf> {
         return Err(Error::UnsupportedSource);
     }
     Ok(source)
+}
+
+fn resolve_cover(cover: Option<&Path>) -> Result<Option<PathBuf>> {
+    let Some(cover) = cover.filter(|path| !path.as_os_str().is_empty()) else {
+        return Ok(None);
+    };
+
+    let cover = absolute(cover)?;
+    if !cover.is_file() {
+        return Err(Error::CoverMissing(cover));
+    }
+    if !archive::is_image(&cover) {
+        return Err(Error::UnsupportedCover);
+    }
+    Ok(Some(cover))
 }
 
 fn resolve_output(job: &Job, source: &Path) -> Result<PathBuf> {
@@ -156,6 +188,16 @@ fn unpack_chapter(
     let _ = fs::remove_dir_all(&unpacked);
 
     Ok(images.len())
+}
+
+/// Обложка живёт вне сборки, поэтому её копируем, а не переносим.
+fn place_cover(cover: &Path, output: &Path) -> Result<()> {
+    let extension = cover
+        .extension()
+        .map(|ext| format!(".{}", ext.to_string_lossy()))
+        .unwrap_or_default();
+    fs::copy(cover, output.join(format!("{:05}{extension}", 1)))?;
+    Ok(())
 }
 
 fn recreate_dir(path: &Path, reporter: &dyn Reporter) -> Result<()> {

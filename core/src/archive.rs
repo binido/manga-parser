@@ -12,12 +12,16 @@ pub fn is_zip(path: &Path) -> bool {
     has_extension(path, &["zip"])
 }
 
+pub fn is_image(path: &Path) -> bool {
+    has_extension(path, &IMAGE_EXTENSIONS)
+}
+
 pub fn find_archives(root: &Path) -> Vec<PathBuf> {
     find_files(root, is_zip)
 }
 
 pub fn find_images(root: &Path) -> Vec<PathBuf> {
-    find_files(root, |path| has_extension(path, &IMAGE_EXTENSIONS))
+    find_files(root, is_image)
 }
 
 /// Распаковывает архив целиком. Записи с путями, ведущими наружу целевой

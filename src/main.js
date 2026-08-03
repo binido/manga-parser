@@ -8,6 +8,9 @@ const dom = {
   modes: document.querySelectorAll("[data-mode]"),
   source: document.querySelector("#source"),
   pickSource: document.querySelector("#pick-source"),
+  cover: document.querySelector("#cover"),
+  pickCover: document.querySelector("#pick-cover"),
+  clearCover: document.querySelector("#clear-cover"),
   outputName: document.querySelector("#output-name"),
   destination: document.querySelector("#destination"),
   pickDestination: document.querySelector("#pick-destination"),
@@ -30,6 +33,7 @@ const state = {
   mode: "archive",
   source: "",
   destination: "",
+  cover: "",
   running: false,
   lastOutput: "",
 };
@@ -110,6 +114,8 @@ function setRunning(running) {
   dom.start.disabled = running;
   dom.cancel.hidden = !running;
   dom.pickSource.disabled = running;
+  dom.pickCover.disabled = running;
+  dom.clearCover.disabled = running;
   dom.pickDestination.disabled = running;
   dom.resetDestination.disabled = running;
   dom.outputName.disabled = running;
@@ -124,6 +130,12 @@ function setMode(mode) {
     button.classList.toggle("is-selected", selected);
     button.setAttribute("aria-checked", String(selected));
   });
+}
+
+function setCover(path) {
+  state.cover = path;
+  dom.cover.value = path;
+  dom.clearCover.hidden = !path;
 }
 
 function baseName(path) {
@@ -176,6 +188,7 @@ async function start() {
     const outcome = await api.prepare({
       source: state.source,
       destination: state.destination || null,
+      cover: state.cover || null,
       outputName: dom.outputName.value.trim(),
     });
 
@@ -211,6 +224,15 @@ function bind() {
       dom.outputName.value = suggestOutputName(picked);
     }
   });
+
+  dom.pickCover.addEventListener("click", async () => {
+    const picked = await api.pickCover();
+    if (!picked) return;
+
+    setCover(picked);
+  });
+
+  dom.clearCover.addEventListener("click", () => setCover(""));
 
   dom.pickDestination.addEventListener("click", async () => {
     const picked = await api.pickDirectory();

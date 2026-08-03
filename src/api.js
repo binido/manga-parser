@@ -4,6 +4,9 @@ import { open } from "@tauri-apps/plugin-dialog";
 import { revealItemInDir } from "@tauri-apps/plugin-opener";
 
 const ARCHIVE_FILTER = [{ name: "Архив с главами", extensions: ["zip"] }];
+const IMAGE_FILTER = [
+  { name: "Изображение", extensions: ["jpg", "jpeg", "png", "gif", "webp"] },
+];
 
 export function pickSource(mode) {
   return open({
@@ -11,6 +14,10 @@ export function pickSource(mode) {
     directory: mode === "folder",
     filters: mode === "folder" ? undefined : ARCHIVE_FILTER,
   });
+}
+
+export function pickCover() {
+  return open({ multiple: false, filters: IMAGE_FILTER });
 }
 
 export function pickDirectory() {

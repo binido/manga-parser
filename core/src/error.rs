@@ -11,6 +11,12 @@ pub enum Error {
     #[error("название выходной папки пустое или содержит разделители пути")]
     InvalidOutputName,
 
+    #[error("обложка не найдена: {0}")]
+    CoverMissing(PathBuf),
+
+    #[error("обложка должна быть изображением: jpg, jpeg, png, gif или webp")]
+    UnsupportedCover,
+
     #[error("не найдено ни одного .zip-архива с главами")]
     NoChapters,
 

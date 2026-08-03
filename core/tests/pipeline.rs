@@ -36,6 +36,7 @@ fn chapters_are_flattened_into_continuous_page_numbers() {
     let job = Job {
         source: source.clone(),
         destination: None,
+        cover: None,
         output_name: "ready".into(),
     };
     let outcome = run(&job, &()).unwrap();
@@ -75,6 +76,7 @@ fn nested_archive_is_unpacked_before_chapters() {
     let job = Job {
         source: bundle,
         destination: None,
+        cover: None,
         output_name: "ready".into(),
     };
     let outcome = run(&job, &()).unwrap();
@@ -94,11 +96,72 @@ fn broken_chapter_is_skipped_not_fatal() {
     let job = Job {
         source,
         destination: None,
+        cover: None,
         output_name: "ready".into(),
     };
     let outcome = run(&job, &()).unwrap();
 
     assert_eq!(outcome.images, 1);
+}
+
+#[test]
+fn cover_becomes_the_first_page_and_shifts_the_rest() {
+    let root = tempfile::tempdir().unwrap();
+    let source = root.path().join("chapters");
+    fs::create_dir(&source).unwrap();
+    write_zip(&source.join("ch_1.zip"), &["a.jpg", "b.jpg"]);
+
+    let cover = root.path().join("cover.png");
+    fs::write(&cover, b"cover bytes").unwrap();
+
+    let job = Job {
+        source,
+        destination: None,
+        cover: Some(cover.clone()),
+        output_name: "ready".into(),
+    };
+    let outcome = run(&job, &()).unwrap();
+
+    assert_eq!(outcome.images, 3);
+    assert_eq!(
+        page_names(&outcome.output),
+        ["00001.png", "00002.jpg", "00003.jpg"]
+    );
+    assert_eq!(
+        fs::read(outcome.output.join("00001.png")).unwrap(),
+        b"cover bytes"
+    );
+    // Обложка остаётся у пользователя: её копируют, а не забирают.
+    assert!(cover.exists());
+}
+
+#[test]
+fn cover_must_be_an_existing_image() {
+    let root = tempfile::tempdir().unwrap();
+    let source = root.path().join("chapters");
+    fs::create_dir(&source).unwrap();
+    write_zip(&source.join("ch_1.zip"), &["a.jpg"]);
+
+    let notes = root.path().join("notes.txt");
+    fs::write(&notes, b"not an image").unwrap();
+
+    let job = |cover| Job {
+        source: source.clone(),
+        destination: None,
+        cover: Some(cover),
+        output_name: "ready".into(),
+    };
+
+    assert!(matches!(
+        run(&job(notes), &()).unwrap_err(),
+        Error::UnsupportedCover
+    ));
+    assert!(matches!(
+        run(&job(root.path().join("ghost.png")), &()).unwrap_err(),
+        Error::CoverMissing(_)
+    ));
+    // Проверка идёт до очистки, поэтому папку результата ещё не создавали.
+    assert!(!root.path().join("ready").exists());
 }
 
 #[test]
@@ -111,6 +174,7 @@ fn output_folder_cannot_swallow_the_source() {
     let job = Job {
         source: source.clone(),
         destination: Some(root.path().to_owned()),
+        cover: None,
         output_name: "chapters".into(),
     };
 
@@ -135,6 +199,7 @@ fn existing_output_is_cleared_before_assembly() {
     let job = Job {
         source,
         destination: None,
+        cover: None,
         output_name: "ready".into(),
     };
     run(&job, &()).unwrap();
