@@ -10,7 +10,8 @@ fn main() {
         .manage(session::Session::default())
         .invoke_handler(tauri::generate_handler![
             commands::prepare,
-            commands::cancel
+            commands::cancel,
+            commands::cover_preview
         ])
         .run(tauri::generate_context!())
         .expect("не удалось запустить приложение");

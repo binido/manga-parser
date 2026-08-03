@@ -9,6 +9,7 @@ const dom = {
   source: document.querySelector("#source"),
   pickSource: document.querySelector("#pick-source"),
   cover: document.querySelector("#cover"),
+  coverPreview: document.querySelector("#cover-preview"),
   pickCover: document.querySelector("#pick-cover"),
   clearCover: document.querySelector("#clear-cover"),
   outputName: document.querySelector("#output-name"),
@@ -132,10 +133,27 @@ function setMode(mode) {
   });
 }
 
-function setCover(path) {
+async function setCover(path) {
   state.cover = path;
   dom.cover.value = path;
   dom.clearCover.hidden = !path;
+
+  // Ссылку предыдущего превью нужно отпустить, иначе байты висят в памяти.
+  URL.revokeObjectURL(dom.coverPreview.src);
+  dom.coverPreview.removeAttribute("src");
+  dom.coverPreview.hidden = true;
+  if (!path) return;
+
+  try {
+    const blob = await api.readCover(path);
+    // Пока читали файл, пользователь мог выбрать другой — это превью уже лишнее.
+    if (state.cover !== path) return;
+
+    dom.coverPreview.src = URL.createObjectURL(blob);
+    dom.coverPreview.hidden = false;
+  } catch (error) {
+    log(`Не удалось показать превью обложки: ${error}`, "warn");
+  }
 }
 
 function baseName(path) {

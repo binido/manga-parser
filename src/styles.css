@@ -178,6 +178,16 @@ h2 {
   flex: 1 1 260px;
 }
 
+.cover-preview {
+  width: 56px;
+  height: 78px;
+  flex: none;
+  object-fit: cover;
+  border-radius: var(--radius-s);
+  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-highest);
+}
+
 .actions {
   display: flex;
   flex-wrap: wrap;

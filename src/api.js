@@ -20,6 +20,11 @@ export function pickCover() {
   return open({ multiple: false, filters: IMAGE_FILTER });
 }
 
+export async function readCover(path) {
+  const bytes = await invoke("cover_preview", { path });
+  return new Blob([new Uint8Array(bytes)]);
+}
+
 export function pickDirectory() {
   return open({ multiple: false, directory: true });
 }
