@@ -1,1 +1,1 @@
-{"default":{"identifier":"default","description":"Выбор источника и открытие готовой папки в файловом менеджере","local":true,"windows":["main"],"permissions":["core:default","dialog:allow-open","opener:allow-reveal-item-in-dir"]}}
+{"default":{"identifier":"default","description":"Выбор источника и открытие готовой папки в файловом менеджере","local":true,"windows":["main"],"permissions":["core:default","core:app:allow-version","dialog:allow-open","opener:allow-reveal-item-in-dir","opener:allow-open-url"]}}

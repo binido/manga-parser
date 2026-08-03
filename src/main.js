@@ -28,6 +28,8 @@ const dom = {
   snackbar: document.querySelector("#snackbar"),
   themeToggle: document.querySelector("#theme-toggle"),
   themeIcon: document.querySelector("#theme-icon"),
+  version: document.querySelector("#version"),
+  repository: document.querySelector("#repository"),
 };
 
 const state = {
@@ -276,9 +278,24 @@ function bind() {
   dom.outputName.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !state.running) start();
   });
+
+  // Ссылка ведёт наружу, поэтому её открывает системный браузер, а не окно.
+  dom.repository.addEventListener("click", (event) => {
+    event.preventDefault();
+    api.openExternal(dom.repository.href);
+  });
+}
+
+async function showVersion() {
+  try {
+    dom.version.textContent = await api.getVersion();
+  } catch {
+    // Разметка уже содержит версию сборки — оставляем её как есть.
+  }
 }
 
 initTheme();
 setMode("archive");
 bind();
+showVersion();
 api.onPipelineEvent(handlePipelineEvent);

@@ -1,7 +1,8 @@
+import { getVersion } from "@tauri-apps/api/app";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/plugin-dialog";
-import { revealItemInDir } from "@tauri-apps/plugin-opener";
+import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
 
 const ARCHIVE_FILTER = [{ name: "Архив с главами", extensions: ["zip"] }];
 const IMAGE_FILTER = [
@@ -44,3 +45,9 @@ export function onPipelineEvent(handler) {
 export function reveal(path) {
   return revealItemInDir(path);
 }
+
+export function openExternal(url) {
+  return openUrl(url);
+}
+
+export { getVersion };
