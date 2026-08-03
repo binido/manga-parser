@@ -1,0 +1,13 @@
+[workspace]
+members = ["core"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[workspace.dependencies]
+manga-parser-core = { path = "core" }
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"
