@@ -111,8 +111,6 @@ h2 {
   width: 36px;
   height: 36px;
   flex: none;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--primary), var(--on-primary-container));
 }
 
 .app-bar__title {

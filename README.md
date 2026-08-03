@@ -47,6 +47,14 @@ npm run tauri dev
 npm run tauri build
 ```
 
+Иконка приложения и знак в шапке — один и тот же файл `public/app-icon.svg`.
+После правки нужно перегенерировать наборы для сборщика:
+
+```bash
+rsvg-convert -w 1024 -h 1024 public/app-icon.svg -o app-icon.png
+npx tauri icon app-icon.png && rm app-icon.png
+```
+
 Тесты и линтеры:
 
 ```bash
