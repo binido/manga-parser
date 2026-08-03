@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manga Parser</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <header class="app-bar">
+      <div class="app-bar__identity">
+        <span class="app-bar__mark" aria-hidden="true"></span>
+        <div>
+          <h1 class="app-bar__title">Manga Parser</h1>
+          <p class="app-bar__subtitle">Сборка глав InkStory для Kindle Comic Converter</p>
+        </div>
+      </div>
+      <button id="theme-toggle" class="icon-button" type="button" title="Сменить тему">
+        <span id="theme-icon" aria-hidden="true">◐</span>
+        <span class="visually-hidden">Сменить тему</span>
+      </button>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <h2 class="card__title">Источник</h2>
+        <p class="card__hint">Архив со всеми главами или папка, в которой лежат их .zip-файлы.</p>
+
+        <div class="segmented" role="radiogroup" aria-label="Тип источника">
+          <button class="segmented__option is-selected" type="button" role="radio"
+                  aria-checked="true" data-mode="archive">Архив .zip</button>
+          <button class="segmented__option" type="button" role="radio"
+                  aria-checked="false" data-mode="folder">Папка с главами</button>
+        </div>
+
+        <div class="picker">
+          <div class="field field--readonly">
+            <input id="source" type="text" readonly placeholder=" " />
+            <label for="source">Путь к источнику</label>
+          </div>
+          <button id="pick-source" class="button button--tonal" type="button">Выбрать</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 class="card__title">Результат</h2>
+        <p class="card__hint">Готовая папка с пронумерованными страницами — её и скармливаем KCC.</p>
+
+        <div class="field">
+          <input id="output-name" type="text" placeholder=" " autocomplete="off" spellcheck="false" />
+          <label for="output-name">Название папки</label>
+        </div>
+
+        <div class="picker">
+          <div class="field field--readonly">
+            <input id="destination" type="text" readonly placeholder=" " />
+            <label for="destination">Куда положить</label>
+          </div>
+          <button id="pick-destination" class="button button--tonal" type="button">Выбрать</button>
+          <button id="reset-destination" class="button button--text" type="button">Рядом с источником</button>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button id="start" class="button button--filled" type="button">Подготовить</button>
+        <button id="cancel" class="button button--outlined" type="button" hidden>Отменить</button>
+        <button id="reveal" class="button button--text" type="button" hidden>Показать папку</button>
+      </div>
+
+      <section id="progress-card" class="card card--progress" hidden>
+        <div class="progress__header">
+          <span id="progress-label">Подготовка…</span>
+          <span id="progress-counter" class="progress__counter"></span>
+        </div>
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div id="progress-bar" class="progress__bar"></div>
+        </div>
+      </section>
+
+      <section class="card card--log">
+        <div class="card__row">
+          <h2 class="card__title">Журнал</h2>
+          <button id="clear-log" class="button button--text" type="button">Очистить</button>
+        </div>
+        <ol id="log" class="log" aria-live="polite"></ol>
+      </section>
+    </main>
+
+    <div id="snackbar" class="snackbar" role="status" hidden></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

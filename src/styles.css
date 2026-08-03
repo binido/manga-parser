@@ -1,0 +1,482 @@
+/* Токены Material Design 3, базовая фиолетовая палитра. */
+:root {
+  --primary: #6750a4;
+  --on-primary: #ffffff;
+  --primary-container: #eaddff;
+  --on-primary-container: #21005d;
+  --secondary-container: #e8def8;
+  --on-secondary-container: #1d192b;
+  --surface: #fef7ff;
+  --surface-container: #f3edf7;
+  --surface-container-high: #ece6f0;
+  --surface-container-highest: #e6e0e9;
+  --on-surface: #1d1b20;
+  --on-surface-variant: #49454f;
+  --outline: #79747e;
+  --outline-variant: #cac4d0;
+  --error: #b3261e;
+  --on-error-container: #410e0b;
+  --warn: #7a5900;
+
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-l: 16px;
+  --radius-full: 999px;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.28), 0 1px 3px 1px rgb(0 0 0 / 0.12);
+  --motion: 200ms cubic-bezier(0.2, 0, 0, 1);
+
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --primary: #d0bcff;
+  --on-primary: #381e72;
+  --primary-container: #4f378b;
+  --on-primary-container: #eaddff;
+  --secondary-container: #4a4458;
+  --on-secondary-container: #e8def8;
+  --surface: #141218;
+  --surface-container: #211f26;
+  --surface-container-high: #2b2930;
+  --surface-container-highest: #36343b;
+  --on-surface: #e6e0e9;
+  --on-surface-variant: #cac4d0;
+  --outline: #938f99;
+  --outline-variant: #49454f;
+  --error: #f2b8b5;
+  --on-error-container: #f9dedc;
+  --warn: #f0c26b;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--surface);
+  color: var(--on-surface);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  transition: background var(--motion), color var(--motion);
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-weight: 500;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* --- Верхняя панель --- */
+
+.app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px clamp(16px, 4vw, 40px);
+  background: var(--surface-container);
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.app-bar__identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.app-bar__mark {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--on-primary-container));
+}
+
+.app-bar__title {
+  font-size: 20px;
+  letter-spacing: 0.1px;
+}
+
+.app-bar__subtitle {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--on-surface-variant);
+}
+
+/* --- Раскладка --- */
+
+.layout {
+  display: grid;
+  gap: 16px;
+  max-width: 840px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 28px) clamp(16px, 4vw, 40px) 48px;
+}
+
+.card {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border-radius: var(--radius-l);
+  background: var(--surface-container);
+}
+
+.card__title {
+  font-size: 16px;
+}
+
+.card__hint {
+  margin: -8px 0 0;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+
+.card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.picker .field {
+  flex: 1 1 260px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* --- Кнопки --- */
+
+.button {
+  --state: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-full);
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  cursor: pointer;
+  transition: background var(--motion), box-shadow var(--motion), opacity var(--motion);
+  background-image: linear-gradient(var(--state), var(--state));
+}
+
+.button:hover {
+  --state: rgb(0 0 0 / 0.06);
+}
+
+.button:active {
+  --state: rgb(0 0 0 / 0.12);
+}
+
+:root[data-theme="dark"] .button:hover {
+  --state: rgb(255 255 255 / 0.1);
+}
+
+:root[data-theme="dark"] .button:active {
+  --state: rgb(255 255 255 / 0.16);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+  --state: transparent;
+}
+
+.button--filled {
+  background-color: var(--primary);
+  color: var(--on-primary);
+}
+
+.button--filled:not(:disabled):hover {
+  box-shadow: var(--shadow-1);
+}
+
+.button--tonal {
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+.button--outlined {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--outline);
+}
+
+.button--text {
+  background-color: transparent;
+  color: var(--primary);
+  padding: 0 12px;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border: none;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-size: 20px;
+  cursor: pointer;
+  transition: background var(--motion);
+}
+
+.icon-button:hover {
+  background: var(--surface-container-highest);
+}
+
+/* --- Сегментированный переключатель --- */
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  align-self: start;
+  max-width: 100%;
+}
+
+.segmented__option {
+  flex: 1;
+  min-height: 38px;
+  padding: 0 20px;
+  border: none;
+  background: transparent;
+  color: var(--on-surface);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--motion), color var(--motion);
+}
+
+.segmented__option + .segmented__option {
+  border-left: 1px solid var(--outline);
+}
+
+.segmented__option:hover {
+  background: var(--surface-container-high);
+}
+
+.segmented__option.is-selected {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+/* --- Текстовые поля --- */
+
+.field {
+  position: relative;
+}
+
+.field input {
+  width: 100%;
+  min-height: 52px;
+  padding: 18px 14px 6px;
+  border: 1px solid var(--outline);
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--on-surface);
+  font: inherit;
+  transition: border-color var(--motion);
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--primary);
+  border-width: 2px;
+  padding: 17px 13px 5px;
+}
+
+.field label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--on-surface-variant);
+  pointer-events: none;
+  transition: transform var(--motion), font-size var(--motion), color var(--motion);
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  transform: translateY(-22px);
+  font-size: 11px;
+}
+
+.field input:focus + label {
+  color: var(--primary);
+}
+
+.field--readonly input {
+  cursor: default;
+  color: var(--on-surface-variant);
+  direction: rtl;
+  text-align: left;
+}
+
+/* --- Прогресс --- */
+
+.card--progress {
+  gap: 10px;
+}
+
+.progress__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+
+.progress__counter {
+  font-variant-numeric: tabular-nums;
+}
+
+.progress {
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-container-highest);
+  overflow: hidden;
+}
+
+.progress__bar {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--primary);
+  transition: width var(--motion);
+}
+
+.progress__bar--indeterminate {
+  width: 40%;
+  animation: slide 1.4s infinite ease-in-out;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+/* --- Журнал --- */
+
+.card--log {
+  gap: 10px;
+}
+
+.log {
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+  max-height: 260px;
+  overflow-y: auto;
+  border-radius: var(--radius-m);
+  background: var(--surface-container-high);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+}
+
+.log:empty::after {
+  content: "Пока пусто.";
+  color: var(--on-surface-variant);
+  font-family: inherit;
+}
+
+.log li {
+  padding: 2px 0;
+  color: var(--on-surface-variant);
+  overflow-wrap: anywhere;
+}
+
+.log li.is-warn {
+  color: var(--warn);
+}
+
+.log li.is-error {
+  color: var(--error);
+}
+
+.log li.is-done {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/* --- Снекбар --- */
+
+.snackbar {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 14px 18px;
+  border-radius: var(--radius-s);
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  box-shadow: var(--shadow-1);
+  animation: rise var(--motion);
+}
+
+.snackbar--error {
+  color: var(--on-error-container);
+  background: var(--error);
+}
+
+:root[data-theme="dark"] .snackbar--error {
+  color: var(--on-primary);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
