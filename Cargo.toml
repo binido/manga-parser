@@ -7,6 +7,15 @@ version = "1.0.0"
 edition = "2021"
 license = "MIT"
 
+# Вебвью и так тянет свой вес, поэтому бинарник жмём максимально.
+# panic оставлен на unwind: паника в обработке архива должна всплыть в окно
+# ошибкой, а не убить приложение вместе с окном.
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1
+opt-level = "s"
+
 [workspace.dependencies]
 manga-parser-core = { path = "core" }
 serde = { version = "1", features = ["derive"] }
